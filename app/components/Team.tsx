@@ -2,11 +2,11 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { Box, Typography, Card, CardContent, Avatar, IconButton } from "@eleks-ui/components";
+import { Box, Typography, Card, CardContent, Avatar, Chip, Button, IconButton } from "@eleks-ui/components";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { barbers } from "../data/team";
-import { BOOKING_URL } from "../data/contacts";
 
 function BarberCard({ barber }: { barber: (typeof barbers)[number] }) {
   const initials = barber.name
@@ -16,10 +16,10 @@ function BarberCard({ barber }: { barber: (typeof barbers)[number] }) {
 
   return (
     <a
-      href={BOOKING_URL}
+      href={barber.booking_link}
       target="_blank"
       rel="noopener noreferrer"
-      style={{ textDecoration: "none", display: "block", height: "100%" }}
+      style={{ textDecoration: "none", display: "flex", flex: 1 }}
     >
       <Card
         sx={{
@@ -29,7 +29,7 @@ function BarberCard({ barber }: { barber: (typeof barbers)[number] }) {
           overflow: "hidden",
           transition: "all 0.25s ease",
           cursor: "pointer",
-          height: "100%",
+          flex: 1,
           display: "flex",
           flexDirection: "column",
           "&:hover": {
@@ -78,9 +78,25 @@ function BarberCard({ barber }: { barber: (typeof barbers)[number] }) {
               </Avatar>
             </Box>
           )}
+          <Chip
+            label={barber.position}
+            size="small"
+            sx={{
+              position: "absolute",
+              bottom: 8,
+              left: 8,
+              bgcolor: "var(--barberry-gold)",
+              color: "var(--barberry-green)",
+              fontWeight: 700,
+              fontSize: "0.7rem",
+              height: 24,
+              borderRadius: 1.5,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
+            }}
+          />
         </Box>
 
-        <CardContent sx={{ p: 2, flex: 1 }}>
+        <CardContent sx={{ p: 2, flex: 1, display: "flex", flexDirection: "column" }}>
           <Typography
             component="h3"
             sx={{
@@ -102,6 +118,26 @@ function BarberCard({ barber }: { barber: (typeof barbers)[number] }) {
           >
             {barber.information}
           </Typography>
+          <Box sx={{ mt: "auto", pt: 2 }}>
+            <Button
+              variant="contained"
+              size="small"
+              fullWidth
+              startIcon={<CalendarTodayIcon sx={{ fontSize: 16, color: "var(--barberry-sage)" }} />}
+              sx={{
+                bgcolor: "var(--barberry-green)",
+                color: "var(--barberry-sage)",
+                fontWeight: 600,
+                borderRadius: 1.5,
+                py: 0.75,
+                fontSize: "0.8rem",
+                textTransform: "none",
+                "&:hover": { bgcolor: "var(--barberry-green-light)" },
+              }}
+            >
+              Записатись
+            </Button>
+          </Box>
         </CardContent>
       </Card>
     </a>
@@ -254,6 +290,7 @@ export function Team() {
           scrollbarWidth: "none",
           px: { xs: 2, sm: 3 },
           mx: "auto",
+          pb: 1
         }}
       >
         {barbers.map((barber) => (
@@ -264,6 +301,7 @@ export function Team() {
               minWidth: { xs: 220, sm: 260, md: 280 },
               maxWidth: 300,
               flexShrink: 0,
+              display: "flex",
             }}
           >
             <BarberCard barber={barber} />

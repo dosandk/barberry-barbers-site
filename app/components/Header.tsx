@@ -81,7 +81,7 @@ export function Header() {
             onClick={handleLogoClick}
           >
             <Image
-              src="/images/logos/logo 1.png"
+              src="/images/logos/logo-light.webp"
               alt="Barberry Barbers — чоловічий барбершоп у Львові"
               width={180}
               height={50}
@@ -207,7 +207,7 @@ export function Header() {
         <Box sx={{ p: 2.5 }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
             <Image
-              src="/images/logos/logo 1.png"
+              src="/images/logos/logo-light.webp"
               alt="Barberry Barbers"
               width={140}
               height={40}

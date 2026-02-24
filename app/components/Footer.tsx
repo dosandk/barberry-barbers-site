@@ -32,10 +32,31 @@ export function Footer() {
         pt: { xs: 5, sm: 6 },
         pb: { xs: 10, sm: 6 },
         borderTop: "3px solid var(--barberry-gold)",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
+      {/* Diagonal pinstripes */}
+      <Box
+        aria-hidden="true"
+        sx={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          backgroundImage: `repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 10px,
+            rgba(0,0,0,0.07) 10px,
+            rgba(0,0,0,0.07) 11px
+          )`,
+        }}
+      />
+
       <Box
         sx={{
+          position: "relative",
+          zIndex: 1,
           maxWidth: 1200,
           mx: "auto",
           px: { xs: 2, sm: 3 },
@@ -52,11 +73,11 @@ export function Footer() {
           {/* Brand column */}
           <Box>
             <Image
-              src="/images/logos/logo 1.png"
+              src="/images/logos/logo-light.webp"
               alt={COMPANY_NAME}
-              width={180}
-              height={50}
-              style={{ height: "auto", maxHeight: 44, width: "auto", marginBottom: 16 }}
+              width={220}
+              height={62}
+              style={{ height: "auto", maxHeight: 55, width: "auto", marginBottom: 16 }}
             />
             <Typography
               sx={{
@@ -141,16 +162,30 @@ export function Footer() {
                     {loc.address}
                   </a>
                 ) : (
-                  <Typography
-                    key={loc.id}
-                    sx={{
-                      fontSize: "0.85rem",
-                      color: "rgba(229,234,192,0.75)",
-                      lineHeight: 1.5,
-                    }}
-                  >
-                    {loc.address}
-                  </Typography>
+                  <Box key={loc.id}>
+                    <Typography
+                      sx={{
+                        fontSize: "0.85rem",
+                        color: "rgba(229,234,192,0.75)",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {loc.address}
+                    </Typography>
+                    {loc.comingSoon && (
+                      <Typography
+                        sx={{
+                          fontSize: "0.7rem",
+                          fontWeight: 700,
+                          color: "var(--barberry-gold)",
+                          letterSpacing: "0.04em",
+                          mt: 0.5,
+                        }}
+                      >
+                        Скоро відкриття
+                      </Typography>
+                    )}
+                  </Box>
                 )
               )}
             </Stack>

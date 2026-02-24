@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Box, Typography, Button, Stack, Chip } from "@eleks-ui/components";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { BOOKING_URL, WORKING_HOURS, WORKING_HOURS_NOTE } from "../data/contacts";
@@ -21,44 +20,29 @@ export function Hero() {
         overflow: "hidden",
       }}
     >
+      {/* Diagonal pinstripes */}
       <Box
+        aria-hidden="true"
         sx={{
           position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          opacity: 0.04,
-          width: { xs: 300, sm: 500 },
-          height: { xs: 300, sm: 500 },
+          inset: 0,
           pointerEvents: "none",
+          backgroundImage: `repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 10px,
+            rgba(0,0,0,0.07) 10px,
+            rgba(0,0,0,0.07) 11px
+          )`,
         }}
-      >
-        <Image
-          src="/images/logos/logo 3.png"
-          alt=""
-          width={500}
-          height={500}
-          style={{ width: "100%", height: "100%", objectFit: "contain" }}
-          aria-hidden="true"
-        />
-      </Box>
+      />
 
+      {/* Content */}
       <Stack
         alignItems="center"
         spacing={3}
         sx={{ position: "relative", zIndex: 1, textAlign: "center", maxWidth: 720 }}
       >
-        {/* <Box sx={{ mb: 1 }}> */}
-        {/*   <Image */}
-        {/*     src="/images/logos/logo 1.png" */}
-        {/*     alt="Barberry Barbers" */}
-        {/*     width={320} */}
-        {/*     height={90} */}
-        {/*     priority */}
-        {/*     style={{ height: "auto", width: "auto", maxWidth: "280px" }} */}
-        {/*   /> */}
-        {/* </Box> */}
-
         <Typography
           component="h1"
           sx={{
@@ -108,7 +92,7 @@ export function Hero() {
               size="large"
               sx={{
                 bgcolor: "var(--barberry-gold)",
-                color: "var(--barberry-dark)",
+                color: "var(--barberry-green)",
                 fontWeight: 700,
                 borderRadius: 2,
                 px: { xs: 4, sm: 5 },
@@ -146,25 +130,6 @@ export function Hero() {
             Наші послуги
           </Button>
         </Stack>
-
-        {/* <Stack */}
-        {/*   direction="row" */}
-        {/*   spacing={3} */}
-        {/*   sx={{ mt: 2, opacity: 0.5 }} */}
-        {/* > */}
-        {/*   {[1, 2, 3, 4, 5, 6].map((i) => ( */}
-        {/*     <Box key={i} sx={{ width: { xs: 32, sm: 40 }, height: { xs: 32, sm: 40 } }}> */}
-        {/*       <Image */}
-        {/*         src={`/images/icons/icon ${i}.png`} */}
-        {/*         alt="" */}
-        {/*         width={40} */}
-        {/*         height={40} */}
-        {/*         style={{ width: "100%", height: "100%" }} */}
-        {/*         aria-hidden="true" */}
-        {/*       /> */}
-        {/*     </Box> */}
-        {/*   ))} */}
-        {/* </Stack> */}
       </Stack>
     </Box>
   );
