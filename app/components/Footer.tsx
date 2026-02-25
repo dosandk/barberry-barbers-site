@@ -1,6 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Box, Typography, Stack, Divider } from "@eleks-ui/components";
 import {
   COMPANY_NAME,
@@ -12,16 +15,37 @@ import {
   locations,
 } from "../data/contacts";
 
+const NAV_LINKS = [
+  { label: "Головна", href: "/", isHome: true },
+  { label: "Послуги та ціни", href: "/#services", section: "#services", isSection: true },
+  { label: "Наша команда", href: "/#team", section: "#team", isSection: true },
+  { label: "Telegram-бот", href: "/telegram-bot", section: "/telegram-bot", isPage: true },
+  { label: "Сертифікати", href: "/certificates", section: "/certificates", isPage: true },
+  { label: "Корпоративним клієнтам", href: "/corporate", section: "/corporate", isPage: true },
+  { label: "Кафе", href: "/cafe", section: "/cafe", isPage: true },
+  { label: "Контакти", href: "/contacts", section: "/contacts", isPage: true },
+  { label: "Записатися", href: BOOKING_URL, external: true },
+];
+
 export function Footer() {
+  const [hash, setHash] = useState("");
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
 
-  const navLinks = [
-    { label: "Послуги та ціни", href: "/#services" },
-    { label: "Команда", href: "/#team" },
-    { label: "Telegram-бот", href: "/#telegram-bot" },
-    { label: "Контакти", href: "/#contacts" },
-    { label: "Записатися", href: BOOKING_URL, external: true },
-  ];
+  useEffect(() => {
+    setHash(typeof window !== "undefined" ? window.location.hash : "");
+    const handler = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", handler);
+    return () => window.removeEventListener("hashchange", handler);
+  }, []);
+
+  const isNavActive = (link: (typeof NAV_LINKS)[number]) => {
+    if (link.external) return false;
+    if (link.isHome) return pathname === "/" && !hash;
+    if (link.isPage && link.section?.startsWith("/")) return pathname === link.section;
+    if (link.isSection && link.section) return pathname === "/" && hash === link.section;
+    return false;
+  };
 
   return (
     <Box
@@ -72,13 +96,15 @@ export function Footer() {
         >
           {/* Brand column */}
           <Box>
-            <Image
-              src="/images/logos/logo-light.webp"
-              alt={COMPANY_NAME}
-              width={220}
-              height={62}
-              style={{ height: "auto", maxHeight: 55, width: "auto", marginBottom: 16 }}
-            />
+            <Link href="/" style={{ display: "inline-block", textDecoration: "none" }}>
+              <Image
+                src="/images/logos/logo-light.webp"
+                alt={COMPANY_NAME}
+                width={220}
+                height={62}
+                style={{ height: "auto", maxHeight: 55, width: "auto", marginBottom: 16 }}
+              />
+            </Link>
             <Typography
               sx={{
                 fontSize: "0.9rem",
@@ -95,35 +121,59 @@ export function Footer() {
           <Box>
             <Typography
               sx={{
-                fontSize: "0.75rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.12em",
-                color: "var(--barberry-gold)",
+                color: "#e4eac1",
                 mb: 2.5,
               }}
             >
               Навігація
             </Typography>
             <Stack spacing={1.5}>
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target={link.external ? "_blank" : undefined}
-                  rel={link.external ? "noopener noreferrer" : undefined}
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "rgba(229,234,192,0.75)",
-                    textDecoration: "none",
-                    transition: "color 0.2s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = "#E1A140")}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(229,234,192,0.75)")}
-                >
-                  {link.label}
-                </a>
-              ))}
+              {NAV_LINKS.map((link, index) => {
+                const active = isNavActive(link);
+                const showSeparator =
+                  link.isPage && NAV_LINKS[index - 1]?.isSection;
+                return (
+                  <Box key={link.label}>
+                    {showSeparator && (
+                      <Divider sx={{ borderColor: "rgba(225,161,64,0.25)", my: 1.5 }} />
+                    )}
+                    <a
+                      href={link.href}
+                      target={link.external ? "_blank" : undefined}
+                      rel={link.external ? "noopener noreferrer" : undefined}
+                      title={
+                        link.isSection
+                          ? "Перейти до розділу на головній сторінці"
+                          : link.isPage
+                            ? "Перейти на сторінку"
+                            : undefined
+                      }
+                      aria-label={
+                        link.isSection
+                          ? "Перейти до розділу на головній сторінці"
+                          : link.isPage
+                            ? "Перейти на сторінку"
+                            : undefined
+                      }
+                      style={{
+                        fontSize: "0.9rem",
+                        color: active ? "#E1A140" : "rgba(229,234,192,0.75)",
+                        fontWeight: active ? 600 : 400,
+                        textDecoration: "none",
+                        transition: "color 0.2s",
+                      }}
+                      onMouseEnter={(e) => !active && (e.currentTarget.style.color = "#E1A140")}
+                      onMouseLeave={(e) => !active && (e.currentTarget.style.color = "rgba(229,234,192,0.75)")}
+                    >
+                      {link.label}
+                    </a>
+                  </Box>
+                );
+              })}
             </Stack>
           </Box>
 
@@ -131,11 +181,11 @@ export function Footer() {
           <Box>
             <Typography
               sx={{
-                fontSize: "0.75rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.12em",
-                color: "var(--barberry-gold)",
+                color: "#e4eac1",
                 mb: 2.5,
               }}
             >
@@ -195,11 +245,11 @@ export function Footer() {
           <Box>
             <Typography
               sx={{
-                fontSize: "0.75rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.12em",
-                color: "var(--barberry-gold)",
+                color: "#e4eac1",
                 mb: 2.5,
               }}
             >

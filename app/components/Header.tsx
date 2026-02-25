@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,44 +12,90 @@ import {
   IconButton,
   Drawer,
   Stack,
-  Typography,
   Divider,
+  Typography,
 } from "@eleks-ui/components";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { PHONE, PHONE_HREF, BOOKING_URL } from "../data/contacts";
 
-const NAV_ITEMS = [
-  { label: "Послуги", href: "#services" },
-  { label: "Команда", href: "#team" },
-  { label: "Telegram-бот", href: "#telegram-bot" },
+// Секції головної сторінки
+const SECTION_NAV_ITEMS = [
+  { label: "Послуги та ціни", href: "#services" },
+  { label: "Наша команда", href: "#team" },
+  { label: "Telegram бот", href: "#telegram-bot" },
   { label: "Контакти", href: "#contacts" },
+];
+
+// Сторінки (як у футері) — для мобільного меню
+const PAGE_NAV_ITEMS = [
+  { label: "Головна", href: "/", isHome: true },
+  { label: "Telegram-бот", href: "/telegram-bot" },
+  { label: "Сертифікати", href: "/certificates" },
+  { label: "Корпоративним клієнтам", href: "/corporate" },
+  { label: "Кафе", href: "/cafe" },
+  { label: "Контакти", href: "/contacts" },
 ];
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hash, setHash] = useState("");
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === "/";
 
-  const handleNavClick = (href: string) => {
+  useEffect(() => {
+    setHash(typeof window !== "undefined" ? window.location.hash : "");
+    const handler = () => setHash(window.location.hash);
+    window.addEventListener("hashchange", handler);
+    return () => window.removeEventListener("hashchange", handler);
+  }, []);
+
+  const isSectionActive = (item: (typeof SECTION_NAV_ITEMS)[number]) => {
+    return isHome && hash === item.href;
+  };
+
+  const isPageActive = (item: (typeof PAGE_NAV_ITEMS)[number]) => {
+    if (item.isHome) return isHome && !hash;
+    return pathname === item.href;
+  };
+
+  const handleSectionClick = (item: (typeof SECTION_NAV_ITEMS)[number]) => {
     setMobileOpen(false);
     if (isHome) {
-      const el = document.querySelector(href);
+      const el = document.querySelector(item.href);
       el?.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", "/" + item.href);
+      setHash(item.href);
     } else {
-      router.push("/" + href);
+      router.push("/" + item.href);
     }
   };
 
-  const handleLogoClick = () => {
-    if (isHome) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+  const handlePageClick = (item: (typeof PAGE_NAV_ITEMS)[number]) => {
+    setMobileOpen(false);
+    if (item.isHome) {
+      if (isHome) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.history.replaceState(null, "", "/");
+        setHash("");
+      } else {
+        router.push("/");
+      }
     } else {
-      router.push("/");
+      router.push(item.href);
     }
   };
+
+  const navLinkStyles = (active: boolean): React.CSSProperties => ({
+    color: active ? "#E1A140" : "var(--barberry-sage)",
+    fontSize: "0.9rem",
+    fontWeight: active ? 600 : 500,
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "color 0.2s",
+  });
 
   return (
     <>
@@ -67,56 +113,58 @@ export function Header() {
             width: "100%",
             mx: "auto",
             px: { xs: 2, sm: 3 },
-            minHeight: { xs: 64, sm: 72 },
+            minHeight: { xs: 56, sm: 64 },
             justifyContent: "space-between",
           }}
         >
-          <Box
-            sx={{
+          <Link
+            href="/"
+            style={{
               display: "flex",
               alignItems: "center",
-              cursor: "pointer",
               flexShrink: 0,
+              textDecoration: "none",
             }}
-            onClick={handleLogoClick}
           >
             <Image
               src="/images/logos/logo-light.webp"
               alt="Barberry Barbers — чоловічий барбершоп у Львові"
               width={180}
               height={50}
-              style={{ height: "auto", width: "auto", maxHeight: 40, maxWidth: 160 }}
+              style={{ height: "auto", width: "auto", maxHeight: 36, maxWidth: 150 }}
               priority
             />
-          </Box>
+          </Link>
 
           <Box
             component="nav"
-            aria-label="Головна навігація"
+            aria-label="Навігація по головній сторінці"
             sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 3 }}
           >
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.href}
-                href={`/${item.href}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.href);
-                }}
-                style={{
-                  color: "var(--barberry-sage)",
-                  fontSize: "0.95rem",
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#E1A140")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "")}
-              >
-                {item.label}
-              </a>
-            ))}
+            {SECTION_NAV_ITEMS.map((item) => {
+              const active = isSectionActive(item);
+              return (
+                <a
+                  key={item.href}
+                  href={`/${item.href}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSectionClick(item);
+                  }}
+                  title="Перейти до розділу"
+                  aria-label={`Перейти до розділу: ${item.label}`}
+                  style={navLinkStyles(active)}
+                  onMouseEnter={(e) =>
+                    !active && (e.currentTarget.style.setProperty("color", "#E1A140"))
+                  }
+                  onMouseLeave={(e) =>
+                    !active && (e.currentTarget.style.setProperty("color", "var(--barberry-sage)"))
+                  }
+                >
+                  {item.label}
+                </a>
+              );
+            })}
 
             <Box
               sx={{
@@ -206,13 +254,15 @@ export function Header() {
       >
         <Box sx={{ p: 2.5 }}>
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-            <Image
-              src="/images/logos/logo-light.webp"
-              alt="Barberry Barbers"
-              width={140}
-              height={40}
-              style={{ height: "auto", maxHeight: 36 }}
-            />
+            <Link href="/" style={{ display: "flex", textDecoration: "none" }} onClick={() => setMobileOpen(false)}>
+              <Image
+                src="/images/logos/logo-light.webp"
+                alt="Barberry Barbers"
+                width={140}
+                height={40}
+                style={{ height: "auto", width: "auto", maxHeight: 36 }}
+              />
+            </Link>
             <Box
               component="button"
               onClick={() => setMobileOpen(false)}
@@ -231,40 +281,117 @@ export function Header() {
             </Box>
           </Box>
 
-          <Divider sx={{ borderColor: "rgba(225,161,64,0.15)", mb: 3 }} />
+          <Divider sx={{ borderColor: "rgba(225,161,64,0.15)", mb: 2 }} />
 
+          <Typography
+            sx={{
+              fontSize: "0.9rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--barberry-gold)",
+              mb: 1.5,
+              px: 1.5,
+            }}
+          >
+            На головній сторінці
+          </Typography>
+          <Divider sx={{ borderColor: "rgba(225,161,64,0.2)", mb: 1.5 }} />
+          <Stack spacing={0} sx={{ mb: 3 }}>
+            {SECTION_NAV_ITEMS.map((item) => {
+              const active = isSectionActive(item);
+              return (
+                <a
+                  key={item.href}
+                  href={`/${item.href}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleSectionClick(item);
+                  }}
+                  style={{
+                    fontSize: "0.95rem",
+                    fontWeight: active ? 600 : 500,
+                    cursor: "pointer",
+                    padding: "12px 14px",
+                    display: "block",
+                    color: active ? "#E1A140" : "var(--barberry-sage)",
+                    textDecoration: "none",
+                    borderRadius: 8,
+                    transition: "all 0.2s",
+                    backgroundColor: active ? "rgba(225,161,64,0.12)" : "transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "#E1A140";
+                    e.currentTarget.style.backgroundColor = "rgba(225,161,64,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = active ? "#E1A140" : "";
+                    e.currentTarget.style.backgroundColor = active
+                      ? "rgba(225,161,64,0.12)"
+                      : "transparent";
+                  }}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
+          </Stack>
+
+          <Divider sx={{ borderColor: "rgba(225,161,64,0.2)", my: 2 }} />
+
+          <Typography
+            sx={{
+              fontSize: "0.9rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "var(--barberry-gold)",
+              mb: 1.5,
+              px: 1.5,
+            }}
+          >
+            Сторінки
+          </Typography>
+          <Divider sx={{ borderColor: "rgba(225,161,64,0.2)", mb: 1.5 }} />
           <Stack spacing={0}>
-            {NAV_ITEMS.map((item) => (
-              <a
-                key={item.href}
-                href={`/${item.href}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavClick(item.href);
-                }}
-                style={{
-                  fontSize: "1.15rem",
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  padding: "14px 12px",
-                  display: "block",
-                  color: "var(--barberry-sage)",
-                  textDecoration: "none",
-                  borderRadius: 8,
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "#E1A140";
-                  e.currentTarget.style.backgroundColor = "rgba(225,161,64,0.08)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "";
-                  e.currentTarget.style.backgroundColor = "transparent";
-                }}
-              >
-                {item.label}
-              </a>
-            ))}
+            {PAGE_NAV_ITEMS.map((item) => {
+              const active = isPageActive(item);
+              const href = item.isHome ? "/" : item.href;
+              return (
+                <a
+                  key={item.href}
+                  href={href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePageClick(item);
+                  }}
+                  style={{
+                    fontSize: "0.95rem",
+                    fontWeight: active ? 600 : 500,
+                    cursor: "pointer",
+                    padding: "12px 14px",
+                    display: "block",
+                    color: active ? "#E1A140" : "var(--barberry-sage)",
+                    textDecoration: "none",
+                    borderRadius: 8,
+                    transition: "all 0.2s",
+                    backgroundColor: active ? "rgba(225,161,64,0.12)" : "transparent",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = "#E1A140";
+                    e.currentTarget.style.backgroundColor = "rgba(225,161,64,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = active ? "#E1A140" : "";
+                    e.currentTarget.style.backgroundColor = active
+                      ? "rgba(225,161,64,0.12)"
+                      : "transparent";
+                  }}
+                >
+                  {item.label}
+                </a>
+              );
+            })}
           </Stack>
 
           <Divider sx={{ borderColor: "rgba(225,161,64,0.15)", my: 3 }} />

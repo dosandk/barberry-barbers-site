@@ -51,7 +51,7 @@ export function TelegramBot() {
                 mb: 2.5,
               }}
             >
-              <TelegramIcon sx={{ fontSize: 18 }} />
+              <TelegramIcon sx={{ fontSize: 18, fill: "lightblue" }} />
               <Typography sx={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.04em" }}>
                 TELEGRAM-БОТ
               </Typography>
