@@ -16,7 +16,8 @@ export function MobileBookingBar() {
         zIndex: 1200,
         bgcolor: "var(--barberry-green)",
         borderTop: "1px solid rgba(255,255,255,0.1)",
-        p: 1.5,
+        px: 2,
+        pt: 1.5,
         pb: "calc(0.75rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
@@ -34,6 +35,7 @@ export function MobileBookingBar() {
             textTransform: "none",
             fontSize: "1rem",
             minHeight: 48,
+            touchAction: "manipulation",
             "&:hover": { bgcolor: "#EABB6A" },
           }}
         >

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { Team } from "../components/Team";
 import { Contacts } from "../components/Contacts";
 
 export const metadata: Metadata = {
-  title: "Контакти — Barberry Barbers",
+  title: "Контакти барбершоп Barberry Barbers, чоловіча перукарня у Залізничному районі Львова, навпроти ТЦ Victoria Gardens",
   description:
-    "Адреса, телефон, графік роботи. Barberry Barbers — два салони у Львові.",
+    "Барбершоп Barberry Barbers - чоловіча перукарня у Залізничному районі Львова біля ТЦ Victoria Gardens, яка надає послуги з чоловічих стрижок, стрижок бороди та вус, камуфлювання тощо",
   alternates: {
     canonical: "/contacts",
   },
@@ -22,6 +23,7 @@ export default function ContactsPage() {
   return (
     <main>
       <Contacts />
+      <Team />
     </main>
   );
 }

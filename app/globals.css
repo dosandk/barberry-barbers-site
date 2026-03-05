@@ -22,6 +22,9 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Safe area for notched devices */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 body {
@@ -31,6 +34,8 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent horizontal overscroll on iOS */
+  overscroll-behavior-x: none;
 }
 
 img {
@@ -49,7 +54,15 @@ section {
 
 @media (max-width: 600px) {
   section {
-    scroll-margin-top: 64px;
+    scroll-margin-top: 52px;
+  }
+}
+
+/* Improve tap highlight on mobile */
+@media (hover: none) and (pointer: coarse) {
+  a,
+  button {
+    -webkit-tap-highlight-color: rgba(22, 65, 40, 0.08);
   }
 }
 

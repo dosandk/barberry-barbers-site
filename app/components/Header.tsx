@@ -9,7 +9,6 @@ import {
   Toolbar,
   Box,
   Button,
-  IconButton,
   Drawer,
   Stack,
   Divider,
@@ -108,38 +107,49 @@ export function Header() {
         }}
       >
         <Toolbar
-          sx={{
+          sx={(theme) => ({
             maxWidth: 1200,
             width: "100%",
             mx: "auto",
-            px: { xs: 2, sm: 3 },
-            minHeight: { xs: 56, sm: 64 },
+            px: 2,
+            minHeight: 56,
+            [theme.breakpoints.up("sm")]: { px: 3, minHeight: 64 },
             justifyContent: "space-between",
-          }}
+            alignItems: "center",
+          })}
         >
+          {/* Logo */}
           <Link
             href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexShrink: 0,
-              textDecoration: "none",
-            }}
+            style={{ display: "flex", alignItems: "center", textDecoration: "none", flexShrink: 0 }}
           >
             <Image
               src="/images/logos/logo-light.webp"
               alt="Barberry Barbers — чоловічий барбершоп у Львові"
               width={180}
               height={50}
-              style={{ height: "auto", width: "auto", maxHeight: 36, maxWidth: 150 }}
+              style={{
+                height: "auto",
+                width: "auto",
+                maxHeight: 32,
+                maxWidth: 110,
+                display: "block",
+              }}
               priority
+              sizes="(max-width: 600px) 110px, 150px"
             />
           </Link>
 
+          {/* Desktop nav — hidden below md (900px) */}
           <Box
             component="nav"
             aria-label="Навігація по головній сторінці"
-            sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 3 }}
+            sx={(theme) => ({
+              display: "none",
+              [theme.breakpoints.up("md")]: { display: "flex" },
+              alignItems: "center",
+              gap: 3,
+            })}
           >
             {SECTION_NAV_ITEMS.map((item) => {
               const active = isSectionActive(item);
@@ -166,14 +176,7 @@ export function Header() {
               );
             })}
 
-            <Box
-              sx={{
-                width: "1px",
-                height: 24,
-                bgcolor: "rgba(225,161,64,0.2)",
-                mx: 0.5,
-              }}
-            />
+            <Box sx={{ width: "1px", height: 24, bgcolor: "rgba(225,161,64,0.2)", mx: 0.5 }} />
 
             <a
               href={PHONE_HREF}
@@ -213,28 +216,30 @@ export function Header() {
             </a>
           </Box>
 
-          <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 0.5 }}>
-            <a href={PHONE_HREF} aria-label="Зателефонувати">
-              <IconButton aria-label="Зателефонувати" sx={{ color: "var(--barberry-sand)" }}>
-                <PhoneIcon />
-              </IconButton>
-            </a>
-            <Box
-              component="button"
-              aria-label="Відкрити меню"
-              onClick={() => setMobileOpen(true)}
-              sx={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                p: 1,
-                display: "flex",
-                alignItems: "center",
-                color: "var(--barberry-sage)",
-              }}
-            >
-              <MenuIcon />
-            </Box>
+          {/* Mobile: burger only — hidden from md (900px) up */}
+          <Box
+            component="button"
+            aria-label="Відкрити меню"
+            onClick={() => setMobileOpen(true)}
+            sx={(theme) => ({
+              display: "flex",
+              [theme.breakpoints.up("md")]: { display: "none" },
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              p: 1,
+              m: 0,
+              width: 44,
+              height: 44,
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--barberry-sage)",
+              flexShrink: 0,
+              borderRadius: 1,
+              "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+            })}
+          >
+            <MenuIcon sx={{ fontSize: 26 }} />
           </Box>
         </Toolbar>
       </AppBar>
@@ -244,60 +249,131 @@ export function Header() {
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
         PaperProps={{
-          sx: {
+          sx: (theme) => ({
             width: "100%",
-            maxWidth: 360,
+            maxWidth: "100%",
+            [theme.breakpoints.up("sm")]: { maxWidth: 360 },
             bgcolor: "var(--barberry-green)",
             color: "var(--barberry-white)",
-          },
+            display: "flex",
+            flexDirection: "column",
+          }),
         }}
       >
-        <Box sx={{ p: 2.5 }}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
-            <Link href="/" style={{ display: "flex", textDecoration: "none" }} onClick={() => setMobileOpen(false)}>
-              <Image
-                src="/images/logos/logo-light.webp"
-                alt="Barberry Barbers"
-                width={140}
-                height={40}
-                style={{ height: "auto", width: "auto", maxHeight: 36 }}
-              />
-            </Link>
-            <Box
-              component="button"
-              onClick={() => setMobileOpen(false)}
-              aria-label="Закрити меню"
+        {/* Drawer header */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            px: 2.5,
+            py: 1.5,
+            borderBottom: "1px solid rgba(225,161,64,0.15)",
+            flexShrink: 0,
+          }}
+        >
+          <Link
+            href="/"
+            style={{ display: "flex", alignItems: "center", textDecoration: "none" }}
+            onClick={() => setMobileOpen(false)}
+          >
+            <Image
+              src="/images/logos/logo-light.webp"
+              alt="Barberry Barbers"
+              width={140}
+              height={40}
+              style={{ height: "auto", width: "auto", maxHeight: 30, maxWidth: 110, display: "block" }}
+            />
+          </Link>
+          <Box
+            component="button"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Закрити меню"
+            sx={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              width: 44,
+              height: 44,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--barberry-sage)",
+              borderRadius: 1,
+              flexShrink: 0,
+              "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+            }}
+          >
+            <CloseIcon sx={{ fontSize: 24 }} />
+          </Box>
+        </Box>
+
+        {/* Scrollable nav content */}
+        <Box sx={{ flex: 1, overflowY: "auto", px: 2, py: 2 }}>
+          {/* Quick actions */}
+          <Stack direction="row" spacing={1.5} sx={{ mb: 2.5 }}>
+            <a
+              href={PHONE_HREF}
+              style={{ flex: 1, textDecoration: "none" }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 1,
+                  bgcolor: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(225,161,64,0.2)",
+                  borderRadius: 2,
+                  py: 1.25,
+                  color: "var(--barberry-sand)",
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  minHeight: 44,
+                }}
+              >
+                <PhoneIcon sx={{ fontSize: 18 }} />
+                {PHONE}
+              </Box>
+            </a>
+          </Stack>
+
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" style={{ display: "block", marginBottom: 20 }}>
+            <Button
+              variant="contained"
+              fullWidth
               sx={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                p: 1,
-                display: "flex",
-                alignItems: "center",
-                color: "var(--barberry-sage)",
+                bgcolor: "var(--barberry-gold)",
+                color: "var(--barberry-green)",
+                fontWeight: 700,
+                borderRadius: 2,
+                py: 1.25,
+                textTransform: "none",
+                fontSize: "1rem",
+                minHeight: 48,
+                "&:hover": { bgcolor: "#EABB6A" },
               }}
             >
-              <CloseIcon />
-            </Box>
-          </Box>
+              Записатися онлайн
+            </Button>
+          </a>
 
           <Divider sx={{ borderColor: "rgba(225,161,64,0.15)", mb: 2 }} />
 
           <Typography
             sx={{
-              fontSize: "0.9rem",
+              fontSize: "0.75rem",
               fontWeight: 700,
-              letterSpacing: "0.08em",
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
               color: "var(--barberry-gold)",
-              mb: 1.5,
-              px: 1.5,
+              mb: 1,
+              px: 0.5,
             }}
           >
-            На головній сторінці
+            Головна сторінка
           </Typography>
-          <Divider sx={{ borderColor: "rgba(225,161,64,0.2)", mb: 1.5 }} />
-          <Stack spacing={0} sx={{ mb: 3 }}>
+          <Stack spacing={0} sx={{ mb: 2 }}>
             {SECTION_NAV_ITEMS.map((item) => {
               const active = isSectionActive(item);
               return (
@@ -309,26 +385,22 @@ export function Header() {
                     handleSectionClick(item);
                   }}
                   style={{
-                    fontSize: "0.95rem",
-                    fontWeight: active ? 600 : 500,
-                    cursor: "pointer",
-                    padding: "12px 14px",
+                    fontSize: "1rem",
+                    fontWeight: active ? 600 : 400,
+                    padding: "11px 10px",
                     display: "block",
                     color: active ? "#E1A140" : "var(--barberry-sage)",
                     textDecoration: "none",
                     borderRadius: 8,
-                    transition: "all 0.2s",
-                    backgroundColor: active ? "rgba(225,161,64,0.12)" : "transparent",
+                    transition: "all 0.15s",
+                    backgroundColor: active ? "rgba(225,161,64,0.1)" : "transparent",
+                    minHeight: 44,
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#E1A140";
                     e.currentTarget.style.backgroundColor = "rgba(225,161,64,0.08)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = active ? "#E1A140" : "";
-                    e.currentTarget.style.backgroundColor = active
-                      ? "rgba(225,161,64,0.12)"
-                      : "transparent";
+                    e.currentTarget.style.backgroundColor = active ? "rgba(225,161,64,0.1)" : "transparent";
                   }}
                 >
                   {item.label}
@@ -337,22 +409,21 @@ export function Header() {
             })}
           </Stack>
 
-          <Divider sx={{ borderColor: "rgba(225,161,64,0.2)", my: 2 }} />
+          <Divider sx={{ borderColor: "rgba(225,161,64,0.12)", mb: 2 }} />
 
           <Typography
             sx={{
-              fontSize: "0.9rem",
+              fontSize: "0.75rem",
               fontWeight: 700,
-              letterSpacing: "0.08em",
+              letterSpacing: "0.1em",
               textTransform: "uppercase",
               color: "var(--barberry-gold)",
-              mb: 1.5,
-              px: 1.5,
+              mb: 1,
+              px: 0.5,
             }}
           >
             Сторінки
           </Typography>
-          <Divider sx={{ borderColor: "rgba(225,161,64,0.2)", mb: 1.5 }} />
           <Stack spacing={0}>
             {PAGE_NAV_ITEMS.map((item) => {
               const active = isPageActive(item);
@@ -366,26 +437,22 @@ export function Header() {
                     handlePageClick(item);
                   }}
                   style={{
-                    fontSize: "0.95rem",
-                    fontWeight: active ? 600 : 500,
-                    cursor: "pointer",
-                    padding: "12px 14px",
+                    fontSize: "1rem",
+                    fontWeight: active ? 600 : 400,
+                    padding: "11px 10px",
                     display: "block",
                     color: active ? "#E1A140" : "var(--barberry-sage)",
                     textDecoration: "none",
                     borderRadius: 8,
-                    transition: "all 0.2s",
-                    backgroundColor: active ? "rgba(225,161,64,0.12)" : "transparent",
+                    transition: "all 0.15s",
+                    backgroundColor: active ? "rgba(225,161,64,0.1)" : "transparent",
+                    minHeight: 44,
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#E1A140";
                     e.currentTarget.style.backgroundColor = "rgba(225,161,64,0.08)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.color = active ? "#E1A140" : "";
-                    e.currentTarget.style.backgroundColor = active
-                      ? "rgba(225,161,64,0.12)"
-                      : "transparent";
+                    e.currentTarget.style.backgroundColor = active ? "rgba(225,161,64,0.1)" : "transparent";
                   }}
                 >
                   {item.label}
@@ -393,58 +460,6 @@ export function Header() {
               );
             })}
           </Stack>
-
-          <Divider sx={{ borderColor: "rgba(225,161,64,0.15)", my: 3 }} />
-
-          <a
-            href={PHONE_HREF}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              color: "var(--barberry-sand)",
-              fontSize: "1.1rem",
-              fontWeight: 600,
-              marginBottom: 24,
-              textDecoration: "none",
-            }}
-          >
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                border: "1px solid rgba(225,161,64,0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--barberry-gold)",
-                flexShrink: 0,
-              }}
-            >
-              <PhoneIcon sx={{ fontSize: 20 }} />
-            </Box>
-            {PHONE}
-          </a>
-
-          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" style={{ display: "block" }}>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{
-                bgcolor: "var(--barberry-gold)",
-                color: "var(--barberry-green)",
-                fontWeight: 700,
-                borderRadius: 2,
-                py: 1.5,
-                textTransform: "none",
-                fontSize: "1.1rem",
-                "&:hover": { bgcolor: "#EABB6A" },
-              }}
-            >
-              Записатися онлайн
-            </Button>
-          </a>
         </Box>
       </Drawer>
     </>

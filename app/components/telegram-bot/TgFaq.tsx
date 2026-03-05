@@ -58,8 +58,9 @@ export function TgFaq() {
             <AccordionSummary
               expandIcon={<ExpandMoreIcon sx={{ color: "var(--barberry-green)" }} />}
               sx={{
-                px: 3,
-                py: 1,
+                px: { xs: 2, sm: 3 },
+                py: { xs: 1.25, sm: 1 },
+                minHeight: 48,
                 "& .MuiAccordionSummary-content": { my: 1.5 },
               }}
             >
@@ -67,7 +68,7 @@ export function TgFaq() {
                 {item.q}
               </Typography>
             </AccordionSummary>
-            <AccordionDetails sx={{ px: 3, pb: 3, pt: 0 }}>
+            <AccordionDetails sx={{ px: { xs: 2, sm: 3 }, pb: 3, pt: 0 }}>
               <Typography sx={{ fontSize: "0.95rem", color: "rgba(83,34,0,0.7)", lineHeight: 1.6 }}>
                 {item.a}
               </Typography>

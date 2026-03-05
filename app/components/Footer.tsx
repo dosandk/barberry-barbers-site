@@ -50,15 +50,16 @@ export function Footer() {
   return (
     <Box
       component="footer"
-      sx={{
+      sx={(theme) => ({
         bgcolor: "var(--barberry-green)",
         color: "var(--barberry-white)",
-        pt: { xs: 5, sm: 6 },
-        pb: { xs: 10, sm: 6 },
+        pt: 5,
+        pb: "calc(5rem + env(safe-area-inset-bottom, 0px))",
+        [theme.breakpoints.up("sm")]: { pt: 6, pb: 6 },
         borderTop: "3px solid var(--barberry-gold)",
         position: "relative",
         overflow: "hidden",
-      }}
+      })}
     >
       {/* Diagonal pinstripes */}
       <Box
@@ -78,32 +79,55 @@ export function Footer() {
       />
 
       <Box
-        sx={{
+        sx={(theme) => ({
           position: "relative",
           zIndex: 1,
           maxWidth: 1200,
           mx: "auto",
-          px: { xs: 2, sm: 3 },
-        }}
+          px: 2,
+          [theme.breakpoints.up("sm")]: { px: 3 },
+        })}
       >
         <Box
-          sx={{
+          sx={(theme) => ({
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "2fr 1fr 1fr 1fr" },
-            gap: { xs: 4, md: 5 },
+            gridTemplateColumns: "1fr",
+            gap: 4,
             mb: 4,
-          }}
+            [theme.breakpoints.up("sm")]: { gridTemplateColumns: "1fr 1fr", gap: 4 },
+            [theme.breakpoints.up("md")]: { gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: 5 },
+          })}
         >
           {/* Brand column */}
           <Box>
             <Link href="/" style={{ display: "inline-block", textDecoration: "none" }}>
-              <Image
-                src="/images/logos/logo-light.webp"
-                alt={COMPANY_NAME}
-                width={220}
-                height={62}
-                style={{ height: "auto", maxHeight: 55, width: "auto", marginBottom: 16 }}
-              />
+              <Box
+                sx={(theme) => ({
+                  mb: 2,
+                  "& img": {
+                    height: "auto",
+                    width: "auto",
+                    maxHeight: 36,
+                    maxWidth: 130,
+                    objectFit: "contain",
+                    display: "block",
+                  },
+                  [theme.breakpoints.up("sm")]: {
+                    "& img": { maxHeight: 48, maxWidth: 180 },
+                  },
+                  [theme.breakpoints.up("md")]: {
+                    "& img": { maxHeight: 55, maxWidth: 220 },
+                  },
+                })}
+              >
+                <Image
+                  src="/images/logos/logo-light.webp"
+                  alt={COMPANY_NAME}
+                  width={220}
+                  height={62}
+                  style={{ marginBottom: 0 }}
+                />
+              </Box>
             </Link>
             <Typography
               sx={{

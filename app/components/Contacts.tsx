@@ -110,6 +110,53 @@ export function Contacts() {
       }}
     >
       <Box sx={{ maxWidth: 1200, mx: "auto" }}>
+        <Box sx={{ textAlign: "center", mb: { xs: 5, sm: 6 } }}>
+          <Typography
+            sx={{
+              fontSize: "0.8rem",
+              fontWeight: 600,
+              color: "rgba(83,34,0,0.5)",
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              mb: 1,
+            }}
+          >
+            PREMIUM BARBER SHOP
+          </Typography>
+          <Typography
+            component="h2"
+            sx={{
+              fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.5rem" },
+              fontWeight: 800,
+              color: "var(--barberry-green)",
+              mb: 3,
+            }}
+          >
+            БАРБЕРШОП ПРЕМІУМ КЛАСУ
+          </Typography>
+          <Box sx={{ maxWidth: 720, mx: "auto" }}>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.95rem", sm: "1.05rem" },
+                color: "rgba(83, 34, 0, 0.75)",
+                lineHeight: 1.7,
+                mb: 2,
+              }}
+            >
+              У барбершопі Barberry Barbers ми поєднуємо найвищу якість обслуговування, увагу до деталей та індивідуальний підхід до кожного клієнта. Це не просто стрижка — це цілий ритуал, де кожен етап продуманий до дрібниць: від консультації до фінального штриха вашого образу. Ми створюємо атмосферу, де чоловік може розслабитись, випити ароматної кави, поспілкуватися або просто побути наодинці зі своїми думками.
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "0.95rem", sm: "1.05rem" },
+                color: "rgba(83, 34, 0, 0.75)",
+                lineHeight: 1.7,
+              }}
+            >
+              Ми віримо, що справжній чоловічий салон має бути місцем сили та натхнення. Саме тому використовуємо лише преміум-інструменти та перевірену косметику, щоб ви залишилися задоволені не лише результатом, а й усім процесом. У Львові не так багато місць, де до вашої зовнішності ставляться як до мистецтва — і ми серед них. Ми не просто стрижемо — ми створюємо ваш новий стиль.
+            </Typography>
+          </Box>
+        </Box>
+
         <Box sx={{ textAlign: "center", mb: { xs: 4, sm: 5 } }}>
           <Typography
             component="h2"
@@ -318,10 +365,11 @@ export function Contacts() {
             <Divider sx={{ my: 3 }} />
 
             <Stack
-              direction="row"
+              direction={{ xs: "column", sm: "row" }}
               spacing={2}
               justifyContent="center"
               alignItems="center"
+              sx={{ flexWrap: "wrap", gap: 1.5 }}
             >
               <Typography
                 sx={{
@@ -332,6 +380,7 @@ export function Contacts() {
               >
                 Ми в соцмережах:
               </Typography>
+              <Stack direction="row" spacing={1}>
               <a
                 href={SOCIAL_LINKS.instagram}
                 target="_blank"
@@ -342,6 +391,8 @@ export function Contacts() {
                   aria-label="Instagram"
                   sx={{
                     color: "var(--barberry-green)",
+                    minWidth: 44,
+                    minHeight: 44,
                     "&:hover": { bgcolor: "rgba(22, 65, 40, 0.08)" },
                   }}
                 >
@@ -360,6 +411,8 @@ export function Contacts() {
                   aria-label="Facebook"
                   sx={{
                     color: "var(--barberry-green)",
+                    minWidth: 44,
+                    minHeight: 44,
                     "&:hover": { bgcolor: "rgba(22, 65, 40, 0.08)" },
                   }}
                 >
@@ -368,6 +421,7 @@ export function Contacts() {
                   </svg>
                 </IconButton>
               </a>
+              </Stack>
             </Stack>
           </CardContent>
         </Card>

@@ -10,12 +10,12 @@ export function Hero() {
       sx={{
         bgcolor: "var(--barberry-green)",
         color: "var(--barberry-white)",
-        minHeight: { xs: "calc(100svh - 64px)", sm: "calc(100svh - 72px)" },
+        minHeight: { xs: "calc(100svh - 52px)", sm: "calc(100svh - 72px)" },
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        px: { xs: 2, sm: 4 },
-        py: { xs: 6, sm: 8 },
+        px: { xs: 1.5, sm: 4 },
+        py: { xs: 5, sm: 8 },
         position: "relative",
         overflow: "hidden",
       }}
